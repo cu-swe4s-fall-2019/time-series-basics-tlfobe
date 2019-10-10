@@ -8,19 +8,25 @@ import datetime
 
 class ImportData:
     def __init__(self, data_csv):
+        if not isinstance(data_csv, str):
+            raise TypeError("ImportData:", str(data_csv), "is not a string!")
+        if not isfile(data_csv):
+            raise FileNotFoundError("ImportData:", data_csv, "is not a valid file!")
         self._time = []
         self._value = []
-
+        
         # open file, create a reader from csv.DictReader, and read input times and values
 
     def linear_search_value(self, key_time):
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
+        pass
 
     def binary_search_value(self,key_time):
         # optional extra credit
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
+        pass
 
 def roundTimeArray(obj, res):
     # Inputs: obj (ImportData Object) and res (rounding resoultion)
@@ -33,10 +39,12 @@ def roundTimeArray(obj, res):
     # return: iterable zip object of the two lists
     # note: you can create additional variables to help with this task
     # which are not returned
+    pass
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
     # combine and print on the key_file
+    pass
 
 if __name__ == '__main__':
 
@@ -57,7 +65,7 @@ if __name__ == '__main__':
 
 
     #pull all the folders in the file
-    files_lst = # list the folders
+    files_lst = []# list the folders
 
 
     #import all the files into a list of ImportData objects (in a loop!)
