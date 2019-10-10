@@ -26,4 +26,7 @@ class TestImportData(unittest.TestCase):
         self.assertRaises(FileNotFoundError, data_import.ImportData, "not_a_file.txt")
 
     def test_importdata_init_testfile(self):
-        
+        pass
+
+    def test_importdata_init_testfile_rand(self):
+        pass

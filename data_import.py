@@ -14,8 +14,13 @@ class ImportData:
             raise FileNotFoundError("ImportData:", data_csv, "is not a valid file!")
         self._time = []
         self._value = []
-        
+
+        with open(data_csv, 'r'):
+            pass
+
         # open file, create a reader from csv.DictReader, and read input times and values
+
+
 
     def linear_search_value(self, key_time):
         # return list of value(s) associated with key_time
