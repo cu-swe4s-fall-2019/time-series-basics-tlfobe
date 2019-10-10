@@ -13,3 +13,4 @@ before_install:
     - conda install --yes python=3.6
 
 script:
+    - python -m unittest test_data_import.py
