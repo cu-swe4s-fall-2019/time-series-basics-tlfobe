@@ -7,6 +7,8 @@ import datetime
 
 
 class ImportData:
+    # open file, create a reader from csv.DictReader, and read input times and values
+    
     def __init__(self, data_csv):
         if not isinstance(data_csv, str):
             raise TypeError("ImportData:", str(data_csv), "is not a string!")
@@ -15,11 +17,17 @@ class ImportData:
         self._time = []
         self._value = []
 
-        with open(data_csv, 'r'):
-            pass
-
-        # open file, create a reader from csv.DictReader, and read input times and values
-
+        with open(data_csv, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    self._time.append(dateutil.parser.parse(row['time']))
+                except ValueError:
+                    print('Bad input format for time')
+                    print(row['time'])
+                self._value.append(float(row['value']))
+            f.close()
+                
 
 
     def linear_search_value(self, key_time):
