@@ -24,6 +24,7 @@ class ImportData:
     -------
 
     """
+
     def __init__(self, data_csv, highlow=False, verbose=False):
         """
         constructor method for ImportData
@@ -48,8 +49,9 @@ class ImportData:
         with open(data_csv, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if not 'time' in row.keys() or not 'value' in row.keys():
-                    raise KeyError("ImportData: the file provided does not have columns for time or value")
+                if 'time' not in row.keys() or 'value' not in row.keys():
+                    raise KeyError(
+                        "ImportData: the file provided does not have columns for time or value")
                 if row['value'] == '' or row['time'] == '':
                     continue
                 else:
