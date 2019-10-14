@@ -2,6 +2,7 @@ import unittest
 import data_import
 import numpy as np
 import os
+import copy
 
 
 class TestImportData(unittest.TestCase):
@@ -119,6 +120,14 @@ class TestRoundTimeArray(unittest.TestCase):
         for time_round, value_sum in zip_obj:
             assert value_sum == 435.0
             assert time_round == data_import.datetime.datetime(2018, 3,16, 0, 0)
+        
+    def test_roundtimearray_test_modify(self):
+        csv_reader = data_import.ImportData('test_timeround.csv')
+        csv_reader_old = copy.deepcopy(csv_reader)
+        zip_obj = data_import.roundTimeArray(csv_reader, 60, 'sum', modify=True)
+        assert len(csv_reader._time) != len(csv_reader_old._time)
+    
+    
         
         
 

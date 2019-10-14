@@ -107,6 +107,26 @@ class ImportData:
 
 
 def roundTimeArray(in_obj, res, operation='average', modify=False):
+    """
+    used to reformat time and value array of an ImportData object
+
+    Arguments
+    ---------
+    in_obj : ImportData
+        an instance of an ImportData object that whos data will be transformed
+    res : int
+        resolution in minutes of the new transformed data
+    operation : string
+        how value data will be reconsiled for multiple times
+    modify : bool
+        whether this function changes the original ImportData object
+
+    Returns
+    -------
+    zip_obj : zip
+        a zip object containing parallel arrays of new times and values
+
+    """
     # Inputs: obj (ImportData Object) and res (rounding resoultion)
     # objective:
     # create a list of datetime entries and associated values
