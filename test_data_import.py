@@ -125,6 +125,27 @@ class TestRoundTimeArray(unittest.TestCase):
     def test_roundtimearray_test_modify(self):
         csv_reader = data_import.ImportData('test_timeround.csv')
         csv_reader_old = copy.deepcopy(csv_reader)
-        zip_obj = data_import.roundTimeArray(
+        data_import.roundTimeArray(
             csv_reader, 60, 'sum', modify=True)
         assert len(csv_reader._time) != len(csv_reader_old._time)
+
+
+class TestPrintArray(unittest.TestCase):
+    def test_printarray_bolus_cgm(self):
+        bolus_data = data_import.ImportData('smallData/bolus_small.csv')
+        cgm_data = data_import.ImportData('smallData/cgm_small.csv')
+        cgm_zip = data_import.roundTimeArray(cgm_data, 60, 'average')
+        bolus_zip = data_import.roundTimeArray(bolus_data, 60, 'sum')
+        data_list = [cgm_zip, bolus_zip]
+        ann_list = ['cgm_small', 'bolus_small']
+        base_name = 'test_printarray.csv'
+        key_file = 'cgm_small'
+        data_import.printArray(data_list, ann_list, base_name, key_file)
+        assert os.path.exists(base_name)
+        with open(base_name, 'r') as f:
+            assert 'time,cgm,bolus' in f.readline()
+            assert '2018-03-16 00:00:00,144.5,0.7,' in f.readline()
+
+    
+        
+

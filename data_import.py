@@ -185,8 +185,54 @@ def roundTimeArray(in_obj, res, operation='average', modify=False):
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
+    """
+    a function which aligns data sets based on datetime objects
+
+    Arguments
+    ---------
+    data_list : list of zip objects
+        list of zipped (date, value) pairs. see output of roundTimeArray
+    annotation_list : list of strings
+        list of strings with column labes for data value
+    base_name : str
+        name of file to output to
+    key_file : str
+        name from annotation list to align data on
+    """
     # combine and print on the key_file
-    pass
+
+    base_data = []
+    key_index = 0
+    data_list = [list(zip_obj) for zip_obj in data_list]
+    for i in range(len(annotation_list)):
+        if annotation_list[i] == key_file:
+            base_data = data_list[i]
+            key_index = i
+            break
+        if i == len(annotation_list)-1:
+            print("Key not found ")
+    if '.csv'not in base_name:
+        base_name = base_name+'.csv'
+
+    with open(base_name, 'w') as f:
+        f.write('time,')
+        f.write(annotation_list[key_index].split('_')[0]+',')
+        non_key = list(range(len(annotation_list)))
+        non_key.remove(key_index)
+
+        for index in non_key:
+            f.write(annotation_list[index].split('_')[0]+',')
+        f.write('\n')
+
+        for time, value in base_data:
+            f.write(str(time)+','+str(value)+',')
+            for n in non_key:
+                t_list = [pair[0] for pair in data_list[n]]
+                if time in t_list:
+                    f.write(str(data_list[n][t_list.index(time)][1])+',')
+                else:
+                    f.write('0,')
+            f.write('\n')
 
 
 if __name__ == '__main__':
