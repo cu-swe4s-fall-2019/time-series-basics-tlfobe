@@ -16,7 +16,8 @@ class TestImportData(unittest.TestCase):
             f.write('Id,time,value\n')
             for i in range(1000):
                 f.write(",".join([str(a)
-                                  for a in np.random.uniform(-1, 1, size=3)])+'\n')
+                                  for a in np.random.uniform(-1, 1, size=3)]) +
+                        '\n')
 
         with open('test_highlow.csv', 'w') as f:
             f.write('id,time,value\n')
@@ -102,7 +103,8 @@ class TestRoundTimeArray(unittest.TestCase):
         self.assertRaises(TypeError, data_import.roundTimeArray,
                           csv_reader, 10, 10, False)
         self.assertRaises(
-            NotImplementedError, data_import.roundTimeArray, csv_reader, 10, 'divide', False)
+            NotImplementedError, data_import.roundTimeArray, csv_reader, 10,
+            'divide', False)
         self.assertRaises(TypeError, data_import.roundTimeArray,
                           'string!', 10, 'average', 'string!')
 
@@ -155,14 +157,18 @@ class TestPrintArray(unittest.TestCase):
         ann_list = ['cgm_small', 'bolus_small']
         base_name = 'test_printarray.csv'
         key_file = 'cgm_small'
-        self.assertRaises(TypeError, data_import.printArray, 1, ann_list, base_name, key_file)
-        self.assertRaises(TypeError, data_import.printArray, data_list, 'string!', base_name, key_file)
-        self.assertRaises(TypeError, data_import.printArray, data_list, ann_list, 1.234, key_file)
-        self.assertRaises(TypeError, data_import.printArray, data_list, ann_list, base_name, [1,2,3,4])
-        self.assertRaises(IndexError, data_import.printArray, [zip([1,2,3,4,5],[1,2,3,4,5]), 'not a zip!'], ann_list, base_name, key_file)
-        self.assertRaises(IndexError, data_import.printArray, data_list, ['a', 'b', 10, [1,2,3,4]], base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          1, ann_list, base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, 'string!', base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, ann_list, 1.234, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, ann_list, base_name, [1, 2, 3, 4])
+        self.assertRaises(IndexError, data_import.printArray,
+                          [zip([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]),
+                           'not a zip!'],
+                          ann_list, base_name, key_file)
+        self.assertRaises(IndexError, data_import.printArray, data_list, [
+                          'a', 'b', 10, [1, 2, 3, 4]], base_name, key_file)
         os.remove('test_printarray.csv')
-
-    
-        
-

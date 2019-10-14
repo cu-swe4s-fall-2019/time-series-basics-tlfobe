@@ -9,7 +9,6 @@ import numpy as np
 
 
 class ImportData:
-    # open file, create a reader from csv.DictReader, and read input times and values
     """
     Class used for representing csv time series data
 
@@ -22,8 +21,15 @@ class ImportData:
 
     Methods
     -------
-
+    __init__(self, data_csv, highlow, verbose)
+        constructor method for ImportData
+    linear_search_value(key_time)
+        linearly search for value given a datetime key
+    binary_search_value(key_time)
+        binary search for value given a datetime key
     """
+    # open file, create a reader from csv.DictReader,
+    # and read input times and values
 
     def __init__(self, data_csv, highlow=False, verbose=False):
         """
@@ -51,7 +57,8 @@ class ImportData:
             for row in reader:
                 if 'time' not in row.keys() or 'value' not in row.keys():
                     raise KeyError(
-                        "ImportData: the file provided does not have columns for time or value")
+                        "ImportData: the file provided does" +
+                        "not have columns for time or value")
                 if row['value'] == '' or row['time'] == '':
                     continue
                 else:
@@ -75,12 +82,14 @@ class ImportData:
 
     def linear_search_value(self, key_time):
         """
-        performs a linear search on the time array and returns the corresponding value
+        performs a linear search on the time array
+        and returns the corresponding value
 
         Arguments
         ---------
         key_time : datetime.datetime
-            a datetime object used to denote the time/date an measurement was taken
+            a datetime object used to denote the time/date of
+            a measurement was taken
 
         Returns
         -------
@@ -90,7 +99,8 @@ class ImportData:
         # if none, return -1 and error message
         if not isinstance(key_time, datetime.datetime):
             raise TypeError(
-                "ImportData.linear_search_value : this function only supports datetime.datetime inputs")
+                "ImportData.linear_search_value : this function only " +
+                "supports datetime.datetime inputs")
         hit_list = []
         for i in range(len(self._time)):
             if key_time == self._time[i]:
@@ -214,14 +224,13 @@ def printArray(data_list, annotation_list, base_name, key_file):
     print(type_data_list)
     type_ann_list = [not isinstance(ann, str) for ann in annotation_list]
     if any(type_data_list):
-        raise IndexError("printArray: a value in data_list was not a zip type!")
+        raise IndexError(
+            "printArray: a value in data_list was not a zip type!")
     if any(type_ann_list):
-        raise IndexError("printArray: a value in annotation_list was not a string type!")
+        raise IndexError(
+            "printArray: a value in annotation_list was not a string type!")
     if key_file not in annotation_list:
         raise IndexError("printArray: key_file is not in annotation_list!")
-
-
-
 
     # combine and print on the key_file
 
@@ -262,7 +271,8 @@ def printArray(data_list, annotation_list, base_name, key_file):
 if __name__ == '__main__':
 
     # adding arguments
-    parser = argparse.ArgumentParser(description='A class to import, combine, and print data from a folder.',
+    parser = argparse.ArgumentParser(description='A class to import,' +
+                                     ' combine, and print data from a folder.',
                                      prog='dataImport')
 
     parser.add_argument('folder_name', type=str, help='Name of the folder')
