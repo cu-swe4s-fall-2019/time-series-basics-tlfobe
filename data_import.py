@@ -72,6 +72,18 @@ class ImportData:
             f.close()
 
     def linear_search_value(self, key_time):
+        """
+        performs a linear search on the time array and returns the corresponding value
+
+        Arguments
+        ---------
+        key_time : datetime.datetime
+            a datetime object used to denote the time/date an measurement was taken
+
+        Returns
+        -------
+        hit_list : array of values corresponding to the specific date/time
+        """
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
         if not isinstance(key_time, datetime.datetime):
