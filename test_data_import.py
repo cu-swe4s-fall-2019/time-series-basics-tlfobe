@@ -42,7 +42,6 @@ class TestImportData(unittest.TestCase):
     def test_importdata_init_testfile_rand(self):
         csv_reader = data_import.ImportData('rand_testfile.csv')
         value_avg = np.average(csv_reader._value)
-        print(value_avg)
         np.testing.assert_almost_equal(value_avg, 0, decimal=1)
 
     def test_importdata_init_smalldata(self):
@@ -67,3 +66,7 @@ class TestImportData(unittest.TestCase):
         assert csv_reader.linear_search_value(time_high) == 300.0
         assert csv_reader.linear_search_value(time_low) == 40.0
         assert csv_reader.linear_search_value(time_normal) == 150.0
+
+    def test_linear_search_incorrect_time_format(self):
+        csv_reader = data_import.ImportData('smallData/smbg_small.csv')
+        self.assertRaises(TypeError, csv_reader.linear_search_value, 10)

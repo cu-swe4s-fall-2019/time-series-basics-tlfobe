@@ -43,6 +43,8 @@ class ImportData:
     def linear_search_value(self, key_time):
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
+        if not isinstance(key_time, datetime.datetime):
+            raise TypeError("ImportData.linear_search_value : this function only supports datetime.datetime inputs")
         for i in range(len(self._time)):
             if key_time == self._time[i]:
                 return(self._value[i])
