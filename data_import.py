@@ -199,6 +199,30 @@ def printArray(data_list, annotation_list, base_name, key_file):
     key_file : str
         name from annotation list to align data on
     """
+    # Exception raising
+
+    if not isinstance(data_list, list):
+        raise TypeError("printArray: data_list in must be a list type!")
+    if not isinstance(annotation_list, list):
+        raise TypeError("printArray: annotation_list in must be a list type!")
+    if not isinstance(base_name, str):
+        raise TypeError("printArray: base_name in must be a string type!")
+    if not isinstance(key_file, str):
+        raise TypeError("printArray: key_file in must be a string type!")
+
+    type_data_list = [not isinstance(data, zip) for data in data_list]
+    print(type_data_list)
+    type_ann_list = [not isinstance(ann, str) for ann in annotation_list]
+    if any(type_data_list):
+        raise IndexError("printArray: a value in data_list was not a zip type!")
+    if any(type_ann_list):
+        raise IndexError("printArray: a value in annotation_list was not a string type!")
+    if key_file not in annotation_list:
+        raise IndexError("printArray: key_file is not in annotation_list!")
+
+
+
+
     # combine and print on the key_file
 
     base_data = []

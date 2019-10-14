@@ -146,6 +146,23 @@ class TestPrintArray(unittest.TestCase):
             assert 'time,cgm,bolus' in f.readline()
             assert '2018-03-16 00:00:00,144.5,0.7,' in f.readline()
 
+    def test_printarray_input_types(self):
+        bolus_data = data_import.ImportData('smallData/bolus_small.csv')
+        cgm_data = data_import.ImportData('smallData/cgm_small.csv')
+        cgm_zip = data_import.roundTimeArray(cgm_data, 60, 'average')
+        bolus_zip = data_import.roundTimeArray(bolus_data, 60, 'sum')
+        data_list = [cgm_zip, bolus_zip]
+        ann_list = ['cgm_small', 'bolus_small']
+        base_name = 'test_printarray.csv'
+        key_file = 'cgm_small'
+        self.assertRaises(TypeError, data_import.printArray, 1, ann_list, base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray, data_list, 'string!', base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray, data_list, ann_list, 1.234, key_file)
+        self.assertRaises(TypeError, data_import.printArray, data_list, ann_list, base_name, [1,2,3,4])
+        self.assertRaises(IndexError, data_import.printArray, [zip([1,2,3,4,5],[1,2,3,4,5]), 'not a zip!'], ann_list, base_name, key_file)
+        self.assertRaises(IndexError, data_import.printArray, data_list, ['a', 'b', 10, [1,2,3,4]], base_name, key_file)
+        os.remove('test_printarray.csv')
+
     
         
 
