@@ -16,3 +16,4 @@ before_install:
 script:
     - python -m unittest test_data_import.py
     - pycodestyle *.py
+    - bash test_data_import_main.sh
