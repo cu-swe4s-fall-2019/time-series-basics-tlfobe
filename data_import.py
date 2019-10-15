@@ -66,8 +66,9 @@ class ImportData:
                         self._time.append(dateutil.parser.parse(row['time']))
                     except ValueError:
                         if verbose:
-                            print('Bad input format for time')
+                            print('Bad input format for time, skipping value')
                             print(row['time'])
+                        continue
                     if highlow:
                         if row['value'] == 'high':
                             self._value.append(300.0)
