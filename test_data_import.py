@@ -164,7 +164,7 @@ class TestPrintArray(unittest.TestCase):
                           data_list, ann_list, 1.234, key_file)
         self.assertRaises(TypeError, data_import.printArray,
                           data_list, ann_list, base_name, [1, 2, 3, 4])
-        self.assertRaises(IndexError, data_import.printArray,
+        self.assertRaises(TypeError, data_import.printArray,
                           [zip([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]),
                            'not a zip!'],
                           ann_list, base_name, key_file)
