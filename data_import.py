@@ -120,14 +120,73 @@ class ImportData:
         else:
             return(hit_list)
 
+    def sort_data(self):
+        """
+        sorts list before running a binary search
+        """
+        times = self._time.copy()
+        values = self._value.copy()
+        zip_time_vals = zip(times, values)
+        zip_sorted = sorted(zip_time_vals)
+        times, values = zip(*zip_sorted)
+        self._time = list(times)
+        self._values = list(values)
+
     def binary_search_value(self, key_time):
         # optional extra credit
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
-        pass
+        lo = -1
+        hi = len(self._time)
+        hit_list = []
+        while (hi - lo > 1):
+            # print("Searching...")
+            mid = (hi + lo) // 2
+            if key_time == self._time[mid]:
+                # print("Found it!")
+                up = 0
+                down = 0
+                while True:
+                    update = False
+                    # print("high at:", mid+up)
+                    # print("low at:", mid-down)
+                    # print("lo =", 0, "hi =", len(self._time))
+                    if up == 0 and down == 0:
+                        hit_list.append(self._value[mid])
+                        if mid-down > 0:
+                            down += 1
+                        if mid+up < len(self._time)-1:
+                            up += 1
+                        continue
+                    if key_time == self._time[mid+up]:
+                        hit_list.append(self._value[mid+up])
+                        if mid+up < len(self._time)-1:
+                            up += 1
+                            update = True
+                    if key_time == self._time[mid-down]:
+                        hit_list.append(self._value[mid-down])
+                        if mid-down > 0:
+                            down += 1
+                            update = True
+                    if update is False:
+                        # print(hit_list)
+                        # print(self._time[mid])
+                        break
+                break
+            if (key_time < self._time[mid]):
+                hi = mid
+            else:
+                lo = mid
+        if len(hit_list) == 0:
+            print(self._file_name)
+            print("Time Value not in csv")
+            return(-1)
+        else:
+            return(hit_list)
 
 
-def roundTimeArray(in_obj, res, operation='average', modify=False):
+def roundTimeArray(in_obj, res, operation='average',
+                   modify=False, search_type="linear"):
     """
     used to reformat time and value array of an ImportData object
 
@@ -162,6 +221,8 @@ def roundTimeArray(in_obj, res, operation='average', modify=False):
         obj = in_obj
     else:
         obj = copy.deepcopy(in_obj)
+    if search_type == 'binary':
+        obj.sort_data()
 
     if not isinstance(obj, ImportData):
         raise TypeError(
@@ -189,10 +250,16 @@ def roundTimeArray(in_obj, res, operation='average', modify=False):
     unique_times = []
     for new_time in new_times:
         if new_time not in unique_times:
-            if operation == 'average':
-                new_value = np.average(obj.linear_search_value(new_time))
-            if operation == 'sum':
-                new_value = np.sum(obj.linear_search_value(new_time))
+            if search_type == "linear":
+                if operation == 'average':
+                    new_value = np.average(obj.linear_search_value(new_time))
+                if operation == 'sum':
+                    new_value = np.sum(obj.linear_search_value(new_time))
+            if search_type == "binary":
+                if operation == 'average':
+                    new_value = np.average(obj.binary_search_value(new_time))
+                if operation == 'sum':
+                    new_value = np.sum(obj.binary_search_value(new_time))
             new_values.append(new_value)
             unique_times.append(new_time)
         else:
@@ -291,6 +358,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--sort_key', type=str, help='File to sort on')
 
+    parser.add_argument('--search_type', type=str,
+                        help='method used list searches')
     # parser.add_argument('--number_of_files', type=int,
     #                     help="Number of Files", required=False)
 
@@ -348,6 +417,6 @@ if __name__ == '__main__':
         printArray(data_15, files_lst, args.output_file +
                    '_15.csv', args.sort_key)
     except IndexError:
-        print("sort_key provided was did not apply to the files in " +
+        print("sort_key provided did not apply to the files in " +
               args.folder_name, file=sys.stderr)
         sys.exit(1)
