@@ -12,16 +12,11 @@ if __name__ == "__main__":
                                      ' combine, and print data from a folder.',
                                      prog='dataImport')
 
-    parser.add_argument('--folder_name', type=str, help='Name of the folder')
+    parser.add_argument('--folder_name', type=str, help='Name of the folder', required=True)
 
-    parser.add_argument('--output_file', type=str, help='Name of Output file')
+    parser.add_argument('--output_file', type=str, help='Name of Output file', required=True)
 
-    parser.add_argument('--sort_key', type=str, help='File to sort on')
-
-    parser.add_argument('--search_type', type=str,
-                        help='method used list searches')
-    # parser.add_argument('--number_of_files', type=int,
-    #                     help="Number of Files", required=False)
+    parser.add_argument('--sort_key', type=str, help='File to sort on', required=True)
 
     args = parser.parse_args()
 

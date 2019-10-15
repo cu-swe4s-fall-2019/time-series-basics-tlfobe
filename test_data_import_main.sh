@@ -17,4 +17,4 @@ assert_exit_code 0
 assert_no_stdout
 
 run test_csv_out cat data_out_5.csv
-assert_in_stdout time,cgm,smbg,hr,meal,bolus,basal,activity
+assert_in_stdout 2018-03-16 00:05:00,151
