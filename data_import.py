@@ -9,7 +9,6 @@ import numpy as np
 
 
 class ImportData:
-    # open file, create a reader from csv.DictReader, and read input times and values
     """
     Class used for representing csv time series data
 
@@ -22,8 +21,15 @@ class ImportData:
 
     Methods
     -------
-
+    __init__(self, data_csv, highlow, verbose)
+        constructor method for ImportData
+    linear_search_value(key_time)
+        linearly search for value given a datetime key
+    binary_search_value(key_time)
+        binary search for value given a datetime key
     """
+    # open file, create a reader from csv.DictReader,
+    # and read input times and values
 
     def __init__(self, data_csv, highlow=False, verbose=False):
         """
@@ -51,7 +57,8 @@ class ImportData:
             for row in reader:
                 if 'time' not in row.keys() or 'value' not in row.keys():
                     raise KeyError(
-                        "ImportData: the file provided does not have columns for time or value")
+                        "ImportData: the file provided does" +
+                        "not have columns for time or value")
                 if row['value'] == '' or row['time'] == '':
                     continue
                 else:
@@ -59,8 +66,9 @@ class ImportData:
                         self._time.append(dateutil.parser.parse(row['time']))
                     except ValueError:
                         if verbose:
-                            print('Bad input format for time')
+                            print('Bad input format for time, skipping value')
                             print(row['time'])
+                        continue
                     if highlow:
                         if row['value'] == 'high':
                             self._value.append(300.0)
@@ -75,12 +83,14 @@ class ImportData:
 
     def linear_search_value(self, key_time):
         """
-        performs a linear search on the time array and returns the corresponding value
+        performs a linear search on the time array
+        and returns the corresponding value
 
         Arguments
         ---------
         key_time : datetime.datetime
-            a datetime object used to denote the time/date an measurement was taken
+            a datetime object used to denote the time/date of
+            a measurement was taken
 
         Returns
         -------
@@ -90,7 +100,8 @@ class ImportData:
         # if none, return -1 and error message
         if not isinstance(key_time, datetime.datetime):
             raise TypeError(
-                "ImportData.linear_search_value : this function only supports datetime.datetime inputs")
+                "ImportData.linear_search_value : this function only " +
+                "supports datetime.datetime inputs")
         hit_list = []
         for i in range(len(self._time)):
             if key_time == self._time[i]:
@@ -185,14 +196,84 @@ def roundTimeArray(in_obj, res, operation='average', modify=False):
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
+    """
+    a function which aligns data sets based on datetime objects
+
+    Arguments
+    ---------
+    data_list : list of zip objects
+        list of zipped (date, value) pairs. see output of roundTimeArray
+    annotation_list : list of strings
+        list of strings with column labes for data value
+    base_name : str
+        name of file to output to
+    key_file : str
+        name from annotation list to align data on
+    """
+    # Exception raising
+
+    if not isinstance(data_list, list):
+        raise TypeError("printArray: data_list in must be a list type!")
+    if not isinstance(annotation_list, list):
+        raise TypeError("printArray: annotation_list in must be a list type!")
+    if not isinstance(base_name, str):
+        raise TypeError("printArray: base_name in must be a string type!")
+    if not isinstance(key_file, str):
+        raise TypeError("printArray: key_file in must be a string type!")
+
+    type_data_list = [not isinstance(data, zip) for data in data_list]
+    print(type_data_list)
+    type_ann_list = [not isinstance(ann, str) for ann in annotation_list]
+    if any(type_data_list):
+        raise IndexError(
+            "printArray: a value in data_list was not a zip type!")
+    if any(type_ann_list):
+        raise IndexError(
+            "printArray: a value in annotation_list was not a string type!")
+    if key_file not in annotation_list:
+        raise IndexError("printArray: key_file is not in annotation_list!")
+
     # combine and print on the key_file
-    pass
+
+    base_data = []
+    key_index = 0
+    data_list = [list(zip_obj) for zip_obj in data_list]
+    for i in range(len(annotation_list)):
+        if annotation_list[i] == key_file:
+            base_data = data_list[i]
+            key_index = i
+            break
+        if i == len(annotation_list)-1:
+            print("Key not found ")
+    if '.csv'not in base_name:
+        base_name = base_name+'.csv'
+
+    with open(base_name, 'w') as f:
+        f.write('time,')
+        f.write(annotation_list[key_index].split('_')[0]+',')
+        non_key = list(range(len(annotation_list)))
+        non_key.remove(key_index)
+
+        for index in non_key:
+            f.write(annotation_list[index].split('_')[0]+',')
+        f.write('\n')
+
+        for time, value in base_data:
+            f.write(str(time)+','+str(value)+',')
+            for n in non_key:
+                t_list = [pair[0] for pair in data_list[n]]
+                if time in t_list:
+                    f.write(str(data_list[n][t_list.index(time)][1])+',')
+                else:
+                    f.write('0,')
+            f.write('\n')
 
 
 if __name__ == '__main__':
 
     # adding arguments
-    parser = argparse.ArgumentParser(description='A class to import, combine, and print data from a folder.',
+    parser = argparse.ArgumentParser(description='A class to import,' +
+                                     ' combine, and print data from a folder.',
                                      prog='dataImport')
 
     parser.add_argument('folder_name', type=str, help='Name of the folder')

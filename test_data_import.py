@@ -10,13 +10,13 @@ class TestImportData(unittest.TestCase):
         with open('testfile.csv', 'w') as f:
             f.write('Id,time,value\n')
             for i in range(1000):
-                f.write(str(10)+(","+str(10))*2+'\n')
+                f.write(str(10)+",12/12/12 0:00,"+str(10)+'\n')
 
         with open('rand_testfile.csv', 'w') as f:
             f.write('Id,time,value\n')
             for i in range(1000):
-                f.write(",".join([str(a)
-                                  for a in np.random.uniform(-1, 1, size=3)])+'\n')
+                f.write(str(10)+",12/12/12 0:00," +
+                        str(np.random.uniform(low=-1, high=1)) + '\n')
 
         with open('test_highlow.csv', 'w') as f:
             f.write('id,time,value\n')
@@ -102,7 +102,8 @@ class TestRoundTimeArray(unittest.TestCase):
         self.assertRaises(TypeError, data_import.roundTimeArray,
                           csv_reader, 10, 10, False)
         self.assertRaises(
-            NotImplementedError, data_import.roundTimeArray, csv_reader, 10, 'divide', False)
+            NotImplementedError, data_import.roundTimeArray, csv_reader, 10,
+            'divide', False)
         self.assertRaises(TypeError, data_import.roundTimeArray,
                           'string!', 10, 'average', 'string!')
 
@@ -125,6 +126,48 @@ class TestRoundTimeArray(unittest.TestCase):
     def test_roundtimearray_test_modify(self):
         csv_reader = data_import.ImportData('test_timeround.csv')
         csv_reader_old = copy.deepcopy(csv_reader)
-        zip_obj = data_import.roundTimeArray(
+        data_import.roundTimeArray(
             csv_reader, 60, 'sum', modify=True)
         assert len(csv_reader._time) != len(csv_reader_old._time)
+
+
+class TestPrintArray(unittest.TestCase):
+    def test_printarray_bolus_cgm(self):
+        bolus_data = data_import.ImportData('smallData/bolus_small.csv')
+        cgm_data = data_import.ImportData('smallData/cgm_small.csv')
+        cgm_zip = data_import.roundTimeArray(cgm_data, 60, 'average')
+        bolus_zip = data_import.roundTimeArray(bolus_data, 60, 'sum')
+        data_list = [cgm_zip, bolus_zip]
+        ann_list = ['cgm_small', 'bolus_small']
+        base_name = 'test_printarray.csv'
+        key_file = 'cgm_small'
+        data_import.printArray(data_list, ann_list, base_name, key_file)
+        assert os.path.exists(base_name)
+        with open(base_name, 'r') as f:
+            assert 'time,cgm,bolus' in f.readline()
+            assert '2018-03-16 00:00:00,144.5,0.7,' in f.readline()
+
+    def test_printarray_input_types(self):
+        bolus_data = data_import.ImportData('smallData/bolus_small.csv')
+        cgm_data = data_import.ImportData('smallData/cgm_small.csv')
+        cgm_zip = data_import.roundTimeArray(cgm_data, 60, 'average')
+        bolus_zip = data_import.roundTimeArray(bolus_data, 60, 'sum')
+        data_list = [cgm_zip, bolus_zip]
+        ann_list = ['cgm_small', 'bolus_small']
+        base_name = 'test_printarray.csv'
+        key_file = 'cgm_small'
+        self.assertRaises(TypeError, data_import.printArray,
+                          1, ann_list, base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, 'string!', base_name, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, ann_list, 1.234, key_file)
+        self.assertRaises(TypeError, data_import.printArray,
+                          data_list, ann_list, base_name, [1, 2, 3, 4])
+        self.assertRaises(IndexError, data_import.printArray,
+                          [zip([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]),
+                           'not a zip!'],
+                          ann_list, base_name, key_file)
+        self.assertRaises(IndexError, data_import.printArray, data_list, [
+                          'a', 'b', 10, [1, 2, 3, 4]], base_name, key_file)
+        os.remove('test_printarray.csv')
