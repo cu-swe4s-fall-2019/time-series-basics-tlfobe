@@ -16,7 +16,7 @@ class TestImportData(unittest.TestCase):
             f.write('Id,time,value\n')
             for i in range(1000):
                 f.write(str(10)+",12/12/12 0:00," +
-                        str(np.random.uniform(low=-1, high=1)) +'\n')
+                        str(np.random.uniform(low=-1, high=1)) + '\n')
 
         with open('test_highlow.csv', 'w') as f:
             f.write('id,time,value\n')
