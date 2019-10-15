@@ -10,14 +10,13 @@ class TestImportData(unittest.TestCase):
         with open('testfile.csv', 'w') as f:
             f.write('Id,time,value\n')
             for i in range(1000):
-                f.write(str(10)+(","+str(10))*2+'\n')
+                f.write(str(10)+",12/12/12 0:00,"+str(10)+'\n')
 
         with open('rand_testfile.csv', 'w') as f:
             f.write('Id,time,value\n')
             for i in range(1000):
-                f.write(",".join([str(a)
-                                  for a in np.random.uniform(-1, 1, size=3)]) +
-                        '\n')
+                f.write(str(10)+",12/12/12 0:00," +
+                        str(np.random.uniform(low=-1, high=1)) +'\n')
 
         with open('test_highlow.csv', 'w') as f:
             f.write('id,time,value\n')
