@@ -23,12 +23,12 @@ The `printArray` function is another crucial function in the operation of this p
 In order to run this program run the following lines while in the top directory of this repo:
 
 ```
-python data_import.py --folder_name [desired-folder] --output_file [desired-output] --sort_key [desired-key]
+$ python data_import.py --folder_name [desired-folder] --output_file [desired-output] --sort_key [desired-key]
 ```
 
 An example is setup below with the `smallData` folder in this repo:
 ```
-python data_import.py --folder_name smallData --output_file data_out --sort_key cgm_small
+$ python data_import.py --folder_name smallData --output_file data_out --sort_key cgm_small
 ```
 
 ## Installation
@@ -40,8 +40,23 @@ Time Series Basics depends on a few packages, ensure that these are installed be
 
 These can be installed with the following code snippet:
 ```
-conda config --add channels r
-conda install -y pycodestyle
-conda install -y python-dateutil
-conda install --yes numpy
+$ conda config --add channels r
+$ conda install -y pycodestyle
+$ conda install -y python-dateutil
+$ conda install --yes numpy
 ```
+## Benchmarking Results
+
+By running this our `benchmarking.py` script you can observe the computational accelaration from using the `linear_search_value` and the `binary_search_value` methods in the `ImportData` class. Using a binary search algorithm we search the at speed $O(log_2(N))$ instead of $O(N)$ for a linear search.
+
+```
+$ python benchmark.py --folder_name --output_file data_out --sort_key cgm_small
+time for data_out_5 linear search: 5.503566265106201
+time for data_out_15 linear search: 1.9773426055908203
+time for data_out_5 binary search: 1.0143568515777588
+time for data_out_15 binary search: 0.495924711227417
+```
+
+As you can see from out benchmarking script, binary search is about 5 times faster for the 5 minute resolution script and around 4 times faster than the 15 minute resolution script!
+
+Cheers!
